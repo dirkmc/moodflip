@@ -1,0 +1,15 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+Hello ${user.name}. These are your friends:
+
+<ul>
+  #{list items:user.friends, as:'friend'}
+    <li>
+      <div class="name">
+        ${friend.name} 
+      </div>
+      <img src="/public/images/${friend.state().mood ? 'smiley-16.png' : 'frowny-16.png'}" />
+    </li>
+  #{/list}
+</ul>

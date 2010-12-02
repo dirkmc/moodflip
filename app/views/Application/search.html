@@ -1,0 +1,20 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+#{form @Application.search()}
+  <input type="text" name="query" />
+  
+  <input type="submit" />
+#{/form}
+
+
+#{if friends}
+  <ul>
+  #{list items:friends, as:'friend'}
+    <li>
+      <div>${friend.name}</div>
+      <div><a href="@{Application.addFriend(user.id, friend.id)}">Add</a></div>
+    </li>
+  #{/list}
+  </ul>
+#{/if}

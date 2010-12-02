@@ -1,0 +1,14 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+Hello ${user.name}.
+#{if user.state().mood}
+  <a href="@{Application.setMood(user.id, false)}">
+    <img src="/public/images/smiley-16.png" border="0" />
+  </a>
+#{/if}
+#{else}
+  <a href="@{Application.setMood(user.id, true)}">
+    <img src="/public/images/frowny-16.png" border="0" />
+  </a>
+#{/else}
