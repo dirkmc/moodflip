@@ -1,5 +1,7 @@
 package models
 
+import java.lang.reflect.Type
+import com.google.gson._
 import java.util.{Date,TreeSet,Set=>JSet,List=>JList,ArrayList}
 import play.db.jpa._
 import play.data.Validators._
@@ -20,7 +22,9 @@ class State(
     def moodToString(mood: Boolean) = if(mood) "Happy" else "Sad"
 
 }
-/*
-object States extends QueryOn[User] {
+
+class StateSerializer extends JsonSerializer[State] {
+    override def serialize(state: State, objType: Type, context: JsonSerializationContext): JsonElement = {
+        return new JsonPrimitive(state.mood)
+    }
 }
-*/

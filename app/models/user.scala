@@ -1,8 +1,19 @@
 package models
- 
-import java.util.{Date,TreeSet,Set=>JSet,List=>JList,ArrayList}
+
+
+import com.google.gson.reflect.TypeToken
+import com.google.gson.JsonPrimitive
+import java.lang.reflect.Type
+import com.google.gson._
+import java.util.{Date,TreeSet,Set=>JSet,List=>JList,ArrayList,Map=>JMap,HashMap}
 import play.db.jpa._
 import play.data.Validators._
+import net.liftweb.json._
+import net.liftweb.json.JsonParser._
+import net.liftweb.json.JsonAST
+import net.liftweb.json.JsonDSL._
+import net.liftweb.json.Serialization.{read, write}
+
 
 @Entity
 class User(
@@ -26,7 +37,6 @@ class User(
     @ManyToMany
     var friends: JList[User] = new ArrayList[User]
 
-    
     override def toString() = username
 
     def setState(mood: Boolean): User = {
@@ -36,6 +46,7 @@ class User(
     }
     
     def state(): State = if(states.size > 0) states.get(states.size() - 1) else null
+    
 }
 
 object User extends QueryOn[User] {
@@ -47,3 +58,14 @@ object User extends QueryOn[User] {
         find("username like :query or name like :query", Map("query" -> like)).fetch
     }
 }
+
+case class UserJson(id: Long, username: String, name: String, state: State, friends: List[Long])
+
+class UserSerializer extends JsonSerializer[User] {
+    override def serialize(user: User, objType: Type, context: JsonSerializationContext): JsonElement = {
+        var friends: List[Long] = asScala.asList(user.friends).map(friend => friend.id)
+        val json = UserJson(user.id, user.username, user.name, user.state(), friends)
+        context.serialize(json)
+    }
+}
+
