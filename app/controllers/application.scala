@@ -22,6 +22,7 @@ object Application extends Controller {
     def index = Template
     
     def signUp = Template
+    def apiSignUp = Template
     
     def addUser(user: User) = {
         user.save()

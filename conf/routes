@@ -7,6 +7,7 @@ GET     /                                       Application.index
 GET     /init                                   Application.init
 GET     /friends                                Application.friends
 GET     /signup                                 Application.signUp
+GET     /apiSignup                              Application.apiSignUp
 POST    /addUser                                Application.addUser
 GET     /search                                 Application.search
 GET     /user                                   Application.user
@@ -16,8 +17,9 @@ GET     /setMood                                Application.setMood
 # TODO: use POST/PUT where appropriate
 GET     /api/user/{username}/login/{password}       API.login
 GET     /api/user/{userId}                          API.getUser
-GET     /api/user/{userId}/friend/{friendId}        APISecure.addFriend
-GET     /api/user/{userId}/mood/{mood}              APISecure.setMood
+*       /api/user/{userId}/friend/{friendId}        APISecure.addFriend
+*       /api/user/{userId}/mood/{mood}              APISecure.setMood
+POST    /api/user                                   API.addUser
 
 GET     /api/user/search/{query}                    API.search
 

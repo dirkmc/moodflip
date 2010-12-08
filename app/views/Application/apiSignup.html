@@ -1,0 +1,19 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+#{form @API.addUser()}
+  <div class="field">
+    <label for="username">Username</label>
+    <input name="user.username" id="username" />
+  </div>
+  <div class="field">
+    <label for="password">Password</label>
+    <input name="user.password" id="password" type="password" />
+  </div>
+  <div class="field">
+    <label for="name">Name</label>
+    <input name="user.name" id="name" />
+  </div>
+  
+  <input type="submit" />
+#{/form}

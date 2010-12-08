@@ -17,15 +17,8 @@ class APIController extends Controller {
 
 object API extends APIController {
     
-    def login(username: String, password: String): Result = {
-        val user = User.find("byUsername", username).first.getOrNotFound
-        if(Authentication.authenticate(user, password)) return MFJson(user)
-        return Forbidden
-    }
-    
-    // TODO:
-    def newUser(user: User) = {
-        Json(user.save())
+    def addUser(user: User) = {
+        MFJson(user.save())
     }
     
     def getUser(userId: Long) = MFJson(User.findById(userId).getOrNotFound)
@@ -35,15 +28,6 @@ object API extends APIController {
 }
 
 object APISecure extends APIController with Secure {
-    
-    // TODO:
-    def newUser(user: User) = {
-        Json(user.save())
-    }
-    
-    def getUser(userId: Long) = MFJson(User.findById(userId).getOrNotFound)
-    
-    def search(query: String) = MFJson(User.search(query))
     
     def addFriend(userId: Long, friendId: Long) = {
         val user = User.findById(userId).getOrNotFound
@@ -55,8 +39,6 @@ object APISecure extends APIController with Secure {
     
     def setMood(userId: Long, mood: Boolean) = {
         val user = User.findById(userId).getOrNotFound
-        // TODO: null == false is always false
-        if(mood == null) NotFound
         user.setState(mood)
         user.save()
         MFJson(user)

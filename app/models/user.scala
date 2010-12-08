@@ -47,6 +47,7 @@ class User(
     
     def state(): State = if(states.size > 0) states.get(states.size() - 1) else null
     
+    def this() = this(null, null, null)
 }
 
 object User extends QueryOn[User] {
