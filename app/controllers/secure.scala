@@ -8,7 +8,7 @@ import play.libs._
 
 trait Secure extends Controller {
     @Before def authenticate: Result = {
-        if(!Authentication.check()) {
+        if(!Authentication.check) {
             return Unauthorized
         }
         
