@@ -11,7 +11,7 @@ class AuthTest extends FunctionalTestCase with Matchers {
 
     @Before
     def init = {
-        Fixtures.delete()
+        Fixtures.deleteAll()
         
         val user = new User(username, password, name)
         user.save

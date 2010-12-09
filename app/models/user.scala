@@ -60,12 +60,12 @@ object User extends QueryOn[User] {
     }
 }
 
-case class UserJson(id: Long, username: String, name: String, state: State, friends: List[Long])
+case class UserJson(id: Long, username: String, name: String, created: Date, state: State, friends: List[Long])
 
 class UserSerializer extends JsonSerializer[User] {
     override def serialize(user: User, objType: Type, context: JsonSerializationContext): JsonElement = {
         var friends: List[Long] = asScala.asList(user.friends).map(friend => friend.id)
-        val json = UserJson(user.id, user.username, user.name, user.state(), friends)
+        val json = UserJson(user.id, user.username, user.name, user.created, user.state(), friends)
         context.serialize(json)
     }
 }
