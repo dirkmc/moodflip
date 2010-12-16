@@ -1,5 +1,16 @@
 package controllers
 
+import play.data.validation.Required
+import play.data.validation.Validation
+import play.data.validation.Valid
+import validation.Captcha
+import captcha.CaptchaManager
+import net.sf.oval.ConstraintViolation
+import net.sf.oval.Validator
+import validation.Unique
+import java.util.{Map=>JMap, List=>JList}
+import play.data.validation.{Error=>PlayError}
+import play.mvc.results.Result
 import play._
 import play.mvc._
 import models._
@@ -13,12 +24,30 @@ import com.google.gson._
 
 class APIController extends Controller {
     def MFJson(obj: Any) = Json(MFSerializer.toJson(obj))
+    def MFJsonError(errors: JMap[String, JList[PlayError]]) = {
+        response.status = 400
+        
+        for(key <- errors.keySet.toArray) {
+            val errorList = errors.get(key)
+            if(errorList.size > 0) {
+                val message = errorList.get(0).message()
+                if(message.equals("validation.object") || message.equals("Validation failed")) {
+                    errors.remove(key)
+                }
+            }
+        }
+        
+        Json(MFSerializer.toJson(errors))
+    }
 }
 
 object API extends APIController {
     
-    def addUser(user: User) = {
-        MFJson(user.save())
+    def getCaptcha() = MFJson("{\"id\":"+CaptchaManager.generate+"}")
+    
+    def addUser(@Valid user: User, @Required @Captcha captcha: String): Result = {
+        if(Validation.hasErrors) return MFJsonError(validation.errorsMap)
+        return MFJson(user.save)
     }
     
     def getUser(userId: Long) = MFJson(User.findById(userId).getOrNotFound)

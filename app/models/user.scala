@@ -1,6 +1,5 @@
 package models
 
-
 import com.google.gson.reflect.TypeToken
 import com.google.gson.JsonPrimitive
 import java.lang.reflect.Type
@@ -8,16 +7,9 @@ import com.google.gson._
 import java.util.{Date,TreeSet,Set=>JSet,List=>JList,ArrayList,Map=>JMap,HashMap}
 import play.db.jpa._
 import play.data.Validators._
-import net.liftweb.json._
-import net.liftweb.json.JsonParser._
-import net.liftweb.json.JsonAST
-import net.liftweb.json.JsonDSL._
-import net.liftweb.json.Serialization.{read, write}
-
 
 @Entity
 class User(
-
     @Required
     var username: String,
     
