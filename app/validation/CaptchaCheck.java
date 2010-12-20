@@ -14,9 +14,8 @@ public class CaptchaCheck extends AbstractAnnotationCheck<Captcha> {
     public static final String mes = "validation.captcha";
     
     @Override
-    public void configure(Captcha unique) {
-        //System.out.println("configure");
-        setMessage(unique.message());
+    public void configure(Captcha captcha) {
+        setMessage(captcha.message());
     }
 
     @Override
