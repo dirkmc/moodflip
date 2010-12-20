@@ -30,19 +30,20 @@ class AddUserTestCase extends ApiTestCase {
         CaptchaManager.enabled = true
     }
     
-    def addUserPOST(username: String, password: String, name: String, captcha: String = null): Response = {
+    def addUserPOST(username: String, password: String, name: String): Response = {
         val parameters: JMap[String, String] = new JHashMap[String, String]()
         parameters.put("user.username", username)
         parameters.put("user.password", password)
         parameters.put("user.name", name)
-        if(captcha == null) parameters.put("captcha", "captcha")
+        parameters.put("captcha.id", "dummy")
+        parameters.put("captcha.value", "dummy")
         val files: JMap[String, File] = new JHashMap[String, File]()
         return POST("/api/user", parameters, files)
     }
     
     def expectError(username: String, password: String, name: String, field: String,
                     code: String, captcha: String = null): Response = {
-        val response = addUserPOST(username, password, name, captcha)
+        val response = addUserPOST(username, password, name)
         response statusShouldBe(400)
         val errors = parseErrors(response)
         errors should have size 1
@@ -60,24 +61,14 @@ class AddUserTestCase extends ApiTestCase {
     def addUser = {
         val response = addUserPOST("bob", "newpass", "Test Bob")
         
+        println(response.out.toString)
+        
         response shouldBeOk()
         val user = parseUser(response)
         
         // The user should not yet have a state or friends, and the password
         // should not be exposed
         checkUser(user, "bob", "Test Bob", System.currentTimeMillis, null, null, Nil)
-    }
-    
-    @Test
-    def addUserNoCaptcha: Unit = {
-        CaptchaManager.enabled = true
-        expectError("bob", "newpass", "Test Bob", "captcha", "validation.required", "")
-    }
-    
-    @Test
-    def addUserBadCaptcha: Unit = {
-        CaptchaManager.enabled = true
-        expectError("bob", "newpass", "Test Bob", "captcha", "validation.captcha", "badcaptcha")
     }
     
     @Test
