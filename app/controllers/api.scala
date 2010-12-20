@@ -1,5 +1,6 @@
 package controllers
 
+import captcha.CaptchaManager.CaptchaAuth
 import play.data.validation.Required
 import play.data.validation.Validation
 import play.data.validation.Valid
@@ -43,9 +44,9 @@ class APIController extends Controller {
 
 object API extends APIController {
     
-    def getCaptcha() = MFJson("{\"id\":"+CaptchaManager.generate+"}")
+    def getCaptcha(captchaId: String) = CaptchaManager.generate(captchaId)
     
-    def addUser(@Valid user: User, @Required @Captcha captcha: String): Result = {
+    def addUser(@Valid user: User, @Required @Captcha captcha: CaptchaAuth): Result = {
         if(Validation.hasErrors) return MFJsonError(validation.errorsMap)
         return MFJson(user.save)
     }

@@ -8,8 +8,7 @@ import java.lang.annotation.Target;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Checks for bad words. Message key: validation.badWord $1: field name $2: bad
- * words that were found (comma separated)
+ * Checks whether a captcha is correct.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD, ElementType.PARAMETER })

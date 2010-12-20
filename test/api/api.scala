@@ -28,20 +28,20 @@ abstract class ApiTestCase extends FunctionalTestCase with Matchers with ShouldM
     
     def parseUsers(response: Response): Array[UserResponse] = {
         val classType = classOf[Array[UserResponse]]
-        val content = response.out.toString("utf-8");
+        val content = response.out.toString("utf-8")
         return gson().fromJson(content, classType)
 
     }
     
     def parseUser(response: Response): UserResponse = {
         val classType = classOf[UserResponse]
-        val content = response.out.toString("utf-8");
+        val content = response.out.toString("utf-8")
         return gson().fromJson(content, classType)
     }
     
     def parseErrors(response: Response): Map[String, Array[ErrorResponse]] = {
-        val classType = new TypeToken[JHashMap[String, Array[ErrorResponse]]]() {}.getType();
-        val content = response.out.toString("utf-8");
+        val classType = new TypeToken[JHashMap[String, Array[ErrorResponse]]]() {}.getType()
+        val content = response.out.toString("utf-8")
         val res: JHashMap[String, Array[ErrorResponse]] = gson().fromJson(content, classType)
         val map = new HashMap[String, Array[ErrorResponse]]()
         res.keySet.toArray.foreach{ key => map += key.toString -> res.get(key) }
@@ -50,7 +50,7 @@ abstract class ApiTestCase extends FunctionalTestCase with Matchers with ShouldM
     
     def parseError(response: Response): ErrorResponse = {
         val classType = classOf[ErrorResponse]
-        val content = response.out.toString("utf-8");
+        val content = response.out.toString("utf-8")
         return gson().fromJson(content, classType)
     }
     

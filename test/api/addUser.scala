@@ -1,5 +1,6 @@
 package api
 
+import org.junit.After
 import play.mvc.Http.Response
 import captcha.CaptchaManager
 import models.User
@@ -21,6 +22,12 @@ class AddUserTestCase extends ApiTestCase {
         user.save
         user.setState(false)
         user.save
+    }
+    
+    @After
+    def tearDown(): Unit = {
+        Fixtures.deleteAll()
+        CaptchaManager.enabled = true
     }
     
     def addUserPOST(username: String, password: String, name: String, captcha: String = null): Response = {

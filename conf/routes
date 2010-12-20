@@ -20,7 +20,7 @@ GET     /api/user/{userId}                          API.getUser
 *       /api/user/{userId}/friend/{friendId}        APISecure.addFriend
 *       /api/user/{userId}/mood/{mood}              APISecure.setMood
 POST    /api/user                                   API.addUser
-GET     /api/captcha                                API.getCaptcha
+GET     /api/captcha/{captchaId}                    API.getCaptcha
 
 GET     /api/user/search/{query}                    API.search
 

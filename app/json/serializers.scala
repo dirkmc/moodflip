@@ -31,13 +31,13 @@ class PlayErrorSerializer extends JsonSerializer[PlayError] {
         json.add("variables", context.serialize(variables))
         json.addProperty("message", obj.message())
         
-        return json
+        json
     }
     
     def getPrivateFieldValue(error: PlayError, fieldName: String): Any = {
         val field = classOf[PlayError].getDeclaredField(fieldName)
         field.setAccessible(true)
-        return field.get(error)
+        field.get(error)
     }
 
 }
@@ -46,7 +46,7 @@ class ListSerializer extends JsonSerializer[List[_]] {
     override def serialize(items: List[_], objType: Type, context: JsonSerializationContext): JsonElement = {
         val json = new JsonArray()
         items.foreach(item => json.add(context.serialize(item)))
-        return json
+        json
     }
 }
 
@@ -54,6 +54,6 @@ class CollectionSerializer extends JsonSerializer[scala.collection.immutable.$co
     override def serialize(items: scala.collection.immutable.$colon$colon[_], objType: Type, context: JsonSerializationContext): JsonElement = {
         val json = new JsonArray()
         items.foreach(item => json.add(context.serialize(item)))
-        return json
+        json
     }
 }
