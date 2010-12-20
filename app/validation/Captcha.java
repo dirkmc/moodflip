@@ -8,10 +8,10 @@ import java.lang.annotation.Target;
 import net.sf.oval.configuration.annotation.Constraint;
 
 /**
- * Checks whether a captcha is correct.
+ * Checks whether the parameter is a valid captcha.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.FIELD, ElementType.PARAMETER })
+@Target( { ElementType.PARAMETER })
 @Constraint(checkWith = CaptchaCheck.class)
 public @interface Captcha {
     String message() default CaptchaCheck.mes;
