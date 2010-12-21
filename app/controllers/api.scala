@@ -8,7 +8,6 @@ import validation.Captcha
 import captcha.CaptchaManager
 import net.sf.oval.ConstraintViolation
 import net.sf.oval.Validator
-import validation.Unique
 import java.util.{Map=>JMap, List=>JList}
 import play.data.validation.{Error=>PlayError}
 import play.mvc.results.Result

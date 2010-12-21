@@ -1,5 +1,6 @@
 package models
 
+import validation.Unique
 import com.google.gson.reflect.TypeToken
 import com.google.gson.JsonPrimitive
 import java.lang.reflect.Type
@@ -8,8 +9,11 @@ import java.util.{Date,TreeSet,Set=>JSet,List=>JList,ArrayList,Map=>JMap,HashMap
 import play.db.jpa._
 import play.data.Validators._
 
+import annotation.target.field
+
 @Entity
 class User(
+    @(Unique @field)
     @Required
     var username: String,
     
@@ -52,12 +56,16 @@ object User extends QueryOn[User] {
     }
 }
 
-case class UserJson(id: Long, username: String, name: String, created: Date, state: State, friends: List[Long])
+case class UserJson(id: Long, username: String, name: String, created: Date, state: State, friends: List[FriendJson])
+case class FriendJson(id: Long, username: String, name: String, created: Date, state: State)
 
 class UserSerializer extends JsonSerializer[User] {
     override def serialize(user: User, objType: Type, context: JsonSerializationContext): JsonElement = {
-        var friends: List[Long] = asScala.asList(user.friends).map(friend => friend.id)
-        val json = UserJson(user.id, user.username, user.name, user.created, user.state(), friends)
+        //var friends: List[Long] = asScala.asList(user.friends).map(friend => friend.id)
+        var friends: List[FriendJson] = asScala.asList(user.friends).map(friend => {
+            new FriendJson(friend.id, friend.username, friend.name, friend.created, friend.state)
+        })
+        val json = UserJson(user.id, user.username, user.name, user.created, user.state, friends)
         context.serialize(json)
     }
 }

@@ -44,6 +44,7 @@ class AddUserTestCase extends ApiTestCase {
     def expectError(username: String, password: String, name: String, field: String,
                     code: String, captcha: String = null): Response = {
         val response = addUserPOST(username, password, name)
+        
         response statusShouldBe(400)
         val errors = parseErrors(response)
         errors should have size 1
@@ -83,7 +84,7 @@ class AddUserTestCase extends ApiTestCase {
     
     @Test
     def addUserUsernameExists: Unit = {
-        expectError("bob", "newpass", "Test Bob", "user.username", "validation.unique")
+        expectError("sadguy", "newpass", "Test Exists", "user.username", "validation.unique")
     }
     
 }
