@@ -62,14 +62,12 @@ class AddUserTestCase extends ApiTestCase {
     def addUser = {
         val response = addUserPOST("bob", "newpass", "Test Bob")
         
-        println(response.out.toString)
-        
         response shouldBeOk()
         val user = parseUser(response)
         
         // The user should not yet have a state or friends, and the password
         // should not be exposed
-        checkUser(user, "bob", "Test Bob", System.currentTimeMillis, null, null, Nil)
+        checkUser(user, "bob", "Test Bob", System.currentTimeMillis, null, null)
     }
     
     @Test

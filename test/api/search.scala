@@ -51,7 +51,7 @@ class SearchTestCase extends ApiTestCase {
         users.foreach(user => {
             if(user.username.equals(this.username)) {
                 foundUser = true
-                checkUser(user, this.username, this.name, createTime, this.mood.toString, null, Nil)
+                checkUser(user, this.username, this.name, createTime, this.mood.toString, null)
             }
         })
         

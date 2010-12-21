@@ -74,7 +74,7 @@ class GetUserTestCase extends ApiTestCase {
         val user = parseUser(response)
         
         // The password should not be exposed
-        checkUser(user, username, name, createTime, mood.toString, null, Nil)
+        checkUser(user, username, name, createTime, mood.toString, null)
     }
     
     @Test
@@ -85,7 +85,7 @@ class GetUserTestCase extends ApiTestCase {
         val user = parseUser(response)
         
         // The mood should not be set
-        checkUser(user, username2, name2, createTime2, null, null, Nil)
+        checkUser(user, username2, name2, createTime2, null, null)
     }
     
     @Test
@@ -96,7 +96,7 @@ class GetUserTestCase extends ApiTestCase {
         val user = parseUser(response)
         
         // The user should have friends
-        checkUser(user, username3, name3, createTime3, mood3.toString, null, List(userId, userId2))
+        checkUser(user, username3, name3, createTime3, mood3.toString, null, Array(userId, userId2))
     }
     
     @Test

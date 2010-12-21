@@ -16,14 +16,16 @@ import java.util.{Map=>JMap, HashMap=>JHashMap}
 abstract class ApiTestCase extends FunctionalTestCase with Matchers with ShouldMatchers {
 
     def checkUser(user: UserResponse, username: String, name: String, time: Long, state: String,
-            password: String, friends: List[Long]) {
+            password: String, friends: Array[Long] = null) {
         user.username should be (username)
         user.name should be (name)
         user.created.getTime should be (time plusOrMinus 2000)
         user.state should be (state)
         user.password should be (password)
-        user.friends should have size (friends.size)
-        user.friends.foreach(friend => friends should contain (friend))
+        if(friends != null) {
+            user.friends should have size (friends.size)
+            user.friends.foreach(friend => friends should contain (friend.id.toLong))
+        }
     }
     
     def parseUsers(response: Response): Array[UserResponse] = {
@@ -62,10 +64,10 @@ abstract class ApiTestCase extends FunctionalTestCase with Matchers with ShouldM
         builder.create
     }
     
-    case class UserResponse(username: String, password: String, name: String,
-            state: String, created: Date, friends: Array[Long])
+    case class UserResponse(id: String, username: String, password: String, name: String,
+            state: String, created: Date, friends: Array[UserResponse])
     class UserResponseIC extends InstanceCreator[UserResponse] {
-        def createInstance(classType: Type): UserResponse = new UserResponse(null, null, null, null, null, null)
+        def createInstance(classType: Type): UserResponse = new UserResponse(null, null, null, null, null, null, null)
     }
     
     case class ErrorResponse(field: String, code: String, message: String, variables: Array[String])
