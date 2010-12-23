@@ -1,4 +1,22 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
 
+<script>
+  $(document).ready(function() {
+      var viewModel = {
+          username: ko.observable("username")
+      };
+
+      ko.applyBindings(viewModel);
+
+      setTimeout(function() {
+          viewModel.username("John");
+      }, 3000)
+  });
+</script>
+
+Hello.<br/>
+<b data-bind="text: username"></b>
+
+
 Moodflip

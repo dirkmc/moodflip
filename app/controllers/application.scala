@@ -1,5 +1,6 @@
 package controllers
 
+import play.test.Fixtures
 import play._
 import play.mvc._
 import models._
@@ -16,7 +17,12 @@ object Application extends Controller {
         val sadGuy = new User("sadguy", "password", "Sad Guy").save()
         sadGuy.setState(false)
         
+        user.friends.add(happyGuy)
+        user.friends.add(sadGuy)
         user.save()
+    }
+    def clear = {
+        Fixtures.delete()
     }
 
     def index = Template
@@ -30,7 +36,9 @@ object Application extends Controller {
     }
     
     def friends = {
-        Template("user" -> getUser)
+        clear
+        init
+        Template
     }
     
     def search(query: String) = {

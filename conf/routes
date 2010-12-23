@@ -12,6 +12,7 @@ POST    /addUser                                Application.addUser
 GET     /search                                 Application.search
 GET     /user                                   Application.user
 GET     /setMood                                Application.setMood
+GET     /addFriend                              Application.addFriend
 
 
 # TODO: use POST/PUT where appropriate
