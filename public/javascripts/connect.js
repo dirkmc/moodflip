@@ -5,7 +5,6 @@ function Connection(settings) {
     this.lastRequestTime = null;
     
     var options = {
-        userId: 1,
         getStateInterval: 3000,
         queueInterval: 500,
         timeout: 10000,
@@ -24,6 +23,15 @@ function Connection(settings) {
         getState: function() {
             var url = "/api/user/" + options.userId;
             that.enqueue(new RemoteCall(url, "GET", {}, false));
+        },
+        setMood: function(mood) {
+            var url = "/api/user/" + options.userId + "/mood/" + mood;
+            that.enqueue(new RemoteCall(url, "POST"));
+        },
+        
+        startPoll: function() {
+            that.API.getState();
+            setInterval(that.API.getState, options.getStateInterval);
         }
     };
     
@@ -122,9 +130,7 @@ function Connection(settings) {
     };
     
     
-    this.API.getState();
-    setInterval(this.API.getState, options.getStateInterval);
-    
+    return this.API;
     
     
     /*

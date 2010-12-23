@@ -35,10 +35,11 @@ object Application extends Controller {
         Action(friends)
     }
     
-    def friends = {
+    def friends() = {
         clear
         init
-        Template
+        val user = getUser()
+        Template(user)
     }
     
     def search(query: String) = {
@@ -64,7 +65,7 @@ object Application extends Controller {
     
     def user(userId: Long) = Template("user" -> User.findById(userId).getOrNotFound)
     
-    def getUser = {
+    def getUser() = {
         val users = User.findAll()
         users(0)
     }

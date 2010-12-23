@@ -9,10 +9,24 @@
 var viewModel = null;
 
 $(document).ready(function() {
+    var connection = new Connection({
+        userId: ${user.id},
+        username: '${user.username}',
+        password: '${user.password}',
+        success: update,
+        error: function(data) {
+            console.log(data);
+        }
+    });
+
     viewModel = {
         name: ko.observable(),
         state: ko.observable(),
-        friends: ko.observableArray([])
+        friends: ko.observableArray([]),
+        toggleState: function() {
+            viewModel.state(!viewModel.state());
+            connection.setMood(viewModel.state());
+        }
     };
 
     var inited = false;
@@ -27,13 +41,7 @@ $(document).ready(function() {
         }
     }
 
-    var connection = new Connection({
-        success: update,
-        error: function(data) {
-            console.log(data);
-        }
-    });
-
+    connection.startPoll();
 });
 </script>
 
@@ -48,8 +56,8 @@ $(document).ready(function() {
 
 <script type="text/html" id="stateTemplate">
   {{= name()}}
-  <img src="/public/images/smiley-16.png" data-bind="visible: state()" />
-  <img src="/public/images/frowny-16.png" data-bind="visible: !state()" />
+  <img src="/public/images/smiley-16.png" data-bind="visible: state(), click: toggleState" />
+  <img src="/public/images/frowny-16.png" data-bind="visible: !state(), click: toggleState" />
 </script>
 
 

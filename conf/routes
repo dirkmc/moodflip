@@ -16,7 +16,6 @@ GET     /addFriend                              Application.addFriend
 
 
 # TODO: use POST/PUT where appropriate
-GET     /api/user/{username}/login/{password}       API.login
 GET     /api/user/{userId}                          API.getUser
 *       /api/user/{userId}/friend/{friendId}        APISecure.addFriend
 *       /api/user/{userId}/mood/{mood}              APISecure.setMood
