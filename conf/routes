@@ -19,6 +19,7 @@ GET     /addFriend                              Application.addFriend
 GET     /api/user/{userId}                          API.getUser
 *       /api/user/{userId}/friend/{friendId}        APISecure.addFriend
 *       /api/user/{userId}/mood/{mood}              APISecure.setMood
+GET     /api/user/{username}/exists                 API.usernameExists
 POST    /api/user                                   API.addUser
 GET     /api/captcha/{captchaId}                    API.getCaptcha
 

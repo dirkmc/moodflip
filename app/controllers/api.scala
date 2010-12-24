@@ -54,6 +54,10 @@ object API extends APIController {
     
     def search(query: String) = MFJson(User.search(query))
     
+    def usernameExists(username: String) = {
+        case class Response(exists: Boolean)
+        MFJson(new Response(User.count("username = ?", username) > 0))
+    }
 }
 
 object APISecure extends APIController with Secure {
