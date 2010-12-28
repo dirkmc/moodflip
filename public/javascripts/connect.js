@@ -5,33 +5,48 @@ function Connection(settings) {
     this.lastRequestTime = null;
     
     var options = {
-        getStateInterval: 3000,
+        pollInterval: 3000,
         queueInterval: 500,
         timeout: 10000,
         test: false
     };
     $.extend(options, settings);
     
-    function RemoteCall(url, method, data, isPoll) {
+    function RemoteCall(callback, url, method, data, isPoll) {
+        this.callback = callback;
         this.url = url;
         this.method = method;
         this.data = data;
         this.isPoll = isPoll != null ? isPoll : false;
     }
     
+    var lastPoll = null;
     this.API = {
-        getState: function() {
+        getUser: function(callback) {
             var url = "/api/user/" + options.userId;
-            that.enqueue(new RemoteCall(url, "GET", {}, false));
+            that.enqueue(new RemoteCall(callback, url, "GET", {}, false));
         },
-        setMood: function(mood) {
+        getUpdates: function(callback, since) {
+            var url = "/api/user/" + options.userId + "/updates/" + that.getISODateString(since);
+            that.enqueue(new RemoteCall(callback, url, "GET", {}, false));
+        },
+        setMood: function(callback, mood) {
             var url = "/api/user/" + options.userId + "/mood/" + mood;
-            that.enqueue(new RemoteCall(url, "POST"));
+            that.enqueue(new RemoteCall(callback, url, "POST"));
         },
         
-        startPoll: function() {
-            that.API.getState();
-            setInterval(that.API.getState, options.getStateInterval);
+        startPoll: function(callback) {
+            var ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
+            function poll() {
+                var nextPoll = new Date();
+                if(lastPoll == null) {
+                    lastPoll = new Date(new Date().getTime() - ONE_WEEK);
+                }
+                that.API.getUpdates(callback, lastPoll);
+                lastPoll = nextPoll;
+            }
+            poll();
+            //setInterval(poll, options.pollInterval);
         }
     };
     
@@ -45,13 +60,13 @@ function Connection(settings) {
             dataType: 'json',
             cache: false,
             timeout: options.timeout,
-            success: function(response) { that.handleSuccess(response); },
+            success: function(response) { that.handleSuccess(response, remoteCall.callback); },
             complete: function() { that.handleComplete(); },
             error: function(req, status, err) { that.handleError(req, status, err); }
         });
     }
     
-    this.handleSuccess = function(response) {
+    this.handleSuccess = function(response, callback) {
         // If the request was a poll, and there is another request waiting to
         // go out that is not a poll, ignore this request (because the state
         // is about to be changed by the next request anyway)
@@ -59,8 +74,8 @@ function Connection(settings) {
             return;
         }
         
-        if(options.success) {
-            options.success(response);
+        if(callback) {
+            callback(response);
         }
     }
     
@@ -128,6 +143,22 @@ function Connection(settings) {
         
         setTimeout(that.processQueue, options.queueInterval);
     };
+    
+    
+    this.getISODateString = function(d) {
+        function pad(n){
+            return n<10 ? '0'+n : n
+        }
+        return 'ISO8601:'
+        + d.getUTCFullYear()+'-'
+        + pad(d.getUTCMonth()+1)+'-'
+        + pad(d.getUTCDate())+'T'
+        + pad(d.getUTCHours())+':'
+        + pad(d.getUTCMinutes())+':'
+        + pad(d.getUTCSeconds())+'.'
+        + d.getUTCMilliseconds()+'-0000'
+    }
+
     
     
     return this.API;

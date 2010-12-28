@@ -3,75 +3,76 @@
 
 #{set 'moreScripts'}
   <script language="Javascript" src="/public/javascripts/connect.js"></script>
+  <script src="@{'/public/javascripts/jquery.tmpl.js'}" type="text/javascript" language="javascript" charset="utf-8"></script>
 #{/set}
 
 <script type="text/javascript">
-var viewModel = null;
 
 $(document).ready(function() {
     var connection = new Connection({
         userId: ${user.id},
         username: '${user.username}',
         password: '${user.password}',
-        success: update,
         error: function(data) {
             console.log(data);
         }
     });
 
-    viewModel = {
-        name: ko.observable(),
-        state: ko.observable(),
-        friends: ko.observableArray([]),
-        toggleState: function() {
-            viewModel.state(!viewModel.state());
-            connection.setMood(viewModel.state());
-        }
-    };
-
     var inited = false;
-    function update(user) {
-        viewModel.name(user.name)
-        viewModel.state(user.state)
-        viewModel.friends(user.friends)
 
-        if(!inited) {
-            ko.applyBindings(viewModel);
-            inited = true;
+    // Get the user's details
+    connection.getUser(function(user) {
+        $('#stateTemplate').tmpl(user).appendTo($('#state').empty());
+    });
+
+    // Start polling for updates
+    var showing = {};
+    connection.startPoll(function(updates) {
+        var newest = [];
+        for(var i = 0; i < updates.length; i++) {
+            var update = updates[i];
+            if(showing[update.id]) {
+                // TODO
+            } else {
+                newest.push(update.id);
+                showing[update.id] = updates[i];
+            }
         }
-    }
-
-    connection.startPoll();
+        
+        for(var i = 0; i < newest.length; i++) {
+            $('#updateTemplate').tmpl(showing[newest[i]]).appendTo('#updates');
+        }
+    });
 });
 </script>
 
 
-<div data-bind='template: { name: "pageTemplate", data: viewModel }'></div>
-
-<script type="text/html" id="pageTemplate">
-  <div data-bind='template: { name: "stateTemplate", data: viewModel }'></div>
-  <div data-bind='template: { name: "friendsTemplate", data: viewModel }'></div>
-</script>
-
-
-<script type="text/html" id="stateTemplate">
-  {{= name()}}
-  <img src="/public/images/smiley-16.png" data-bind="visible: state(), click: toggleState" />
-  <img src="/public/images/frowny-16.png" data-bind="visible: !state(), click: toggleState" />
-</script>
-
-
-<script type="text/html" id="friendsTemplate">
-  <ul>
-    {{each(i, friend) friends}}
-      <li>
-        <div class="name">
-          {{= name}}
-        </div>
-        <img src="/public/images/smiley-16.png" data-bind="visible: friend.state" />
-        <img src="/public/images/frowny-16.png" data-bind="visible: !friend.state" />
-      </li>
-    {{/each}}
+<div id="friends-page">
+  <div id="state"></div>
+  <ul id="updates">
   </ul>
+</div>
+
+<script type="text/x-jquery-tmpl" id="stateTemplate">
+  {{= name}}
+
+  {{if state}}
+    <img src="/public/images/smiley-16.png" />
+  {{else}}
+    <img src="/public/images/frowny-16.png" />
+  {{/if}}
+</script>
+
+<script type="text/x-jquery-tmpl" id="updateTemplate">
+  <li>
+    <div class="name">
+      {{= name}}
+    </div>
+    {{if state}}
+      <img src="/public/images/smiley-16.png" />
+    {{else}}
+      <img src="/public/images/frowny-16.png" />
+    {{/if}}
+  </li>
 </script>
 
