@@ -66,8 +66,8 @@ object User extends QueryOn[User] {
     }
 }
 
-case class UserJson(id: Long, username: String, name: String, created: Date, state: State, friends: List[FriendJson])
-case class FriendJson(id: Long, username: String, name: String, created: Date, state: State)
+case class UserJson(id: Long, username: String, name: String, created: Date, mood: State, friends: List[FriendJson])
+case class FriendJson(id: Long, username: String, name: String, created: Date, mood: State)
 
 class UserSerializer extends JsonSerializer[User] {
     override def serialize(user: User, objType: Type, context: JsonSerializationContext): JsonElement = {

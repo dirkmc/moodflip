@@ -46,7 +46,7 @@ function Connection(settings) {
                 lastPoll = nextPoll;
             }
             poll();
-            //setInterval(poll, options.pollInterval);
+            setInterval(poll, options.pollInterval);
         }
     };
     

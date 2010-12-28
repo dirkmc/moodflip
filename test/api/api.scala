@@ -15,12 +15,12 @@ import java.util.{Map=>JMap, HashMap=>JHashMap}
 
 abstract class ApiTestCase extends FunctionalTestCase with Matchers with ShouldMatchers {
 
-    def checkUser(user: UserResponse, username: String, name: String, time: Long, state: String,
+    def checkUser(user: UserResponse, username: String, name: String, time: Long, mood: String,
             password: String, friends: Array[Long] = null) {
         user.username should be (username)
         user.name should be (name)
         user.created.getTime should be (time plusOrMinus 2000)
-        user.state should be (state)
+        user.mood should be (mood)
         user.password should be (password)
         if(friends != null) {
             user.friends should have size (friends.size)
@@ -63,7 +63,7 @@ abstract class ApiTestCase extends FunctionalTestCase with Matchers with ShouldM
     }
     
     case class UserResponse(id: String, username: String, password: String, name: String,
-            state: String, created: Date, friends: Array[UserResponse])
+            mood: String, created: Date, friends: Array[UserResponse])
     class UserResponseIC extends InstanceCreator[UserResponse] {
         def createInstance(classType: Type): UserResponse = new UserResponse(null, null, null, null, null, null, null)
     }

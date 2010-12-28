@@ -43,6 +43,7 @@ $(document).ready(function() {
             $('#updateTemplate').tmpl(showing[newest[i]]).appendTo('#updates');
         }
     });
+
 });
 </script>
 
@@ -56,7 +57,7 @@ $(document).ready(function() {
 <script type="text/x-jquery-tmpl" id="stateTemplate">
   {{= name}}
 
-  {{if state}}
+  {{if mood}}
     <img src="/public/images/smiley-16.png" />
   {{else}}
     <img src="/public/images/frowny-16.png" />
@@ -68,7 +69,7 @@ $(document).ready(function() {
     <div class="name">
       {{= name}}
     </div>
-    {{if state}}
+    {{if mood}}
       <img src="/public/images/smiley-16.png" />
     {{else}}
       <img src="/public/images/frowny-16.png" />
