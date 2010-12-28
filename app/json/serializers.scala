@@ -17,6 +17,13 @@ object MFSerializer {
     val gson = builder.create
     
     def toJson(obj: Any) = gson.toJson(obj)
+    
+    def toJson(obj: Any, adaptors: Map[java.lang.reflect.Type, Object]) = {
+        val builder = new GsonBuilder()
+        adaptors.foreach{ case(clazz, adaptor) => builder.registerTypeAdapter(clazz, adaptor) }
+        val gson = builder.create
+        gson.toJson(obj)
+    }
 }
 
 class PlayErrorSerializer extends JsonSerializer[PlayError] {

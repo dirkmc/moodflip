@@ -1,5 +1,6 @@
 package controllers
 
+import java.util.Date
 import captcha.CaptchaManager.CaptchaAuth
 import play.data.validation.Required
 import play.data.validation.Validation
@@ -24,6 +25,11 @@ import com.google.gson._
 
 class APIController extends Controller {
     def MFJson(obj: Any) = Json(MFSerializer.toJson(obj))
+    
+    def MFJson(obj: Any, adaptors: Map[java.lang.reflect.Type, Object]) = {
+        Json(MFSerializer.toJson(obj, adaptors))
+    }
+    
     def MFJsonError(errors: JMap[String, JList[PlayError]]) = {
         response.status = 400
         
@@ -51,6 +57,11 @@ object API extends APIController {
     }
     
     def getUser(userId: Long) = MFJson(User.findById(userId).getOrNotFound)
+    
+    def getUpdates(userId: Long, since: Date) = {
+        val updates = User.findById(userId).getOrNotFound.updates(since)
+        MFJson(updates, Map(classOf[State] -> new UserUpdateSerializer))
+    }
     
     def search(query: String) = MFJson(User.search(query))
     

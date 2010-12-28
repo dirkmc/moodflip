@@ -28,25 +28,15 @@ abstract class ApiTestCase extends FunctionalTestCase with Matchers with ShouldM
         }
     }
     
-    def parseUsers(response: Response): Array[UserResponse] = {
-        val classType = classOf[Array[UserResponse]]
-        val content = response.out.toString("utf-8")
-        return gson().fromJson(content, classType)
-
-    }
+    def parseUsers(r: Response): Array[UserResponse] = parseResponse(r, classOf[Array[UserResponse]])
     
-    def parseUser(response: Response): UserResponse = {
-        val classType = classOf[UserResponse]
-        val content = response.out.toString("utf-8")
-        return gson().fromJson(content, classType)
-    }
+    def parseUser(r: Response): UserResponse = parseResponse(r, classOf[UserResponse])
     
-    def parseUserExists(response: Response): UserExistsResponse = {
-        val classType = classOf[UserExistsResponse]
-        val content = response.out.toString("utf-8")
-        return gson().fromJson(content, classType)
-    }
+    def parseUserExists(r: Response): UserExistsResponse = parseResponse(r, classOf[UserExistsResponse])
     
+    def parseUpdates(r: Response): Array[UpdateResponse] = parseResponse(r, classOf[Array[UpdateResponse]])
+    
+    def parseError(r: Response): ErrorResponse = parseResponse(r, classOf[ErrorResponse])
     
     def parseErrors(response: Response): Map[String, Array[ErrorResponse]] = {
         val classType = new TypeToken[JHashMap[String, Array[ErrorResponse]]]() {}.getType()
@@ -57,16 +47,16 @@ abstract class ApiTestCase extends FunctionalTestCase with Matchers with ShouldM
         Map[String, Array[ErrorResponse]]() ++ map
     }
     
-    def parseError(response: Response): ErrorResponse = {
-        val classType = classOf[ErrorResponse]
+    def parseResponse[T](response: Response, classType: java.lang.reflect.Type): T = {
         val content = response.out.toString("utf-8")
-        return gson().fromJson(content, classType)
+        return gson().fromJson(content, classType).asInstanceOf[T]
     }
     
     def gson() = {
         val builder = new GsonBuilder()
         builder.registerTypeAdapter(classOf[UserResponse], new UserResponseIC)
         builder.registerTypeAdapter(classOf[UserExistsResponse], new UserExistsResponseIC)
+        builder.registerTypeAdapter(classOf[UpdateResponse], new UpdateResponseIC)
         builder.registerTypeAdapter(classOf[ErrorResponse], new ErrorResponseIC)
         builder.registerTypeAdapter(classOf[List[_]], new ListIC)
         builder.create
@@ -81,6 +71,11 @@ abstract class ApiTestCase extends FunctionalTestCase with Matchers with ShouldM
     case class UserExistsResponse(exists: String)
     class UserExistsResponseIC extends InstanceCreator[UserExistsResponse] {
         def createInstance(classType: Type): UserExistsResponse = new UserExistsResponse(null)
+    }
+    
+    case class UpdateResponse(id: Long, userId: Long, username: String, name: String, created: Date, mood: Boolean)
+    class UpdateResponseIC extends InstanceCreator[UpdateResponse] {
+        def createInstance(classType: Type): UpdateResponse = new UpdateResponse(0, 0, null, null, null, false)
     }
     
     case class ErrorResponse(field: String, code: String, message: String, variables: Array[String])
