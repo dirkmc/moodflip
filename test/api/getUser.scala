@@ -96,7 +96,7 @@ class GetUserTestCase extends ApiTestCase {
         val user = parseUser(response)
         
         // The user should have friends
-        checkUser(user, username3, name3, createTime3, mood3.toString, null, Array(userId, userId2))
+        checkUser(user, username3, name3, createTime3, mood3.toString, null, 2)
     }
     
     @Test
