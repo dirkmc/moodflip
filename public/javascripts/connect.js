@@ -12,11 +12,12 @@ function Connection(settings) {
     };
     $.extend(options, settings);
     
-    function RemoteCall(callback, url, method, data, isPoll) {
+    function RemoteCall(callback, url, method, data, secure, isPoll) {
         this.callback = callback;
         this.url = url;
         this.method = method;
         this.data = data;
+        this.secure = secure != null ? secure : false;
         this.isPoll = isPoll != null ? isPoll : false;
     }
     
@@ -24,15 +25,15 @@ function Connection(settings) {
     this.API = {
         getUser: function(callback) {
             var url = "/api/user/" + options.userId;
-            that.enqueue(new RemoteCall(callback, url, "GET", {}, false));
+            that.enqueue(new RemoteCall(callback, url, "GET", {}));
         },
         getUpdates: function(callback, since) {
             var url = "/api/user/" + options.userId + "/updates/" + that.getISODateString(since);
-            that.enqueue(new RemoteCall(callback, url, "GET", {}, false));
+            that.enqueue(new RemoteCall(callback, url, "GET", {}, false, true));
         },
         setMood: function(callback, mood) {
             var url = "/api/user/" + options.userId + "/mood/" + mood;
-            that.enqueue(new RemoteCall(callback, url, "POST"));
+            that.enqueue(new RemoteCall(callback, url, "POST", {}, true));
         },
         
         startPoll: function(callback) {
@@ -46,7 +47,7 @@ function Connection(settings) {
                 lastPoll = nextPoll;
             }
             poll();
-            setInterval(poll, options.pollInterval);
+            //setInterval(poll, options.pollInterval);
         }
     };
     
@@ -55,8 +56,13 @@ function Connection(settings) {
             url: remoteCall.url,
             type: remoteCall.method,
             data: remoteCall.data,
-            username: options.username,
-            password: options.password,
+            beforeSend: function(xhr) {
+                if(!remoteCall.secure) {
+                    return;
+                }
+                var auth = "Basic " + Base64.encode(options.username + ":" + options.password);
+                xhr.setRequestHeader("Authorization", auth);
+            },
             dataType: 'json',
             cache: false,
             timeout: options.timeout,

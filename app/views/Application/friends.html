@@ -2,8 +2,9 @@
 #{set title:'Home' /}
 
 #{set 'moreScripts'}
-  <script language="Javascript" src="/public/javascripts/connect.js"></script>
-  <script src="@{'/public/javascripts/jquery.tmpl.js'}" type="text/javascript" language="javascript" charset="utf-8"></script>
+  #{script 'connect.js' /}
+  #{script 'jquery.tmpl.js' /}
+  #{script 'base64.js' /}
 #{/set}
 
 <script type="text/javascript">
@@ -20,11 +21,23 @@ $(document).ready(function() {
 
     var inited = false;
 
+    
     // Get the user's details
+    var userDetails = {};
+    function updateUserDetails() {
+        $('#stateTemplate').tmpl(userDetails).appendTo($('#state').empty());
+        $('#state img').click(function() {
+            userDetails.mood = !userDetails.mood;
+            connection.setMood(function() {}, userDetails.mood);
+            updateUserDetails();
+        })
+    }
     connection.getUser(function(user) {
-        $('#stateTemplate').tmpl(user).appendTo($('#state').empty());
+        userDetails = user;
+        updateUserDetails();
     });
 
+    
     // Start polling for updates
     var showing = {};
     connection.startPoll(function(updates) {
