@@ -73,16 +73,16 @@ object API extends APIController {
 
 object APISecure extends APIController with Secure {
     
-    def addFriend(userId: Long, friendId: Long) = {
-        val user = User.findById(userId).getOrNotFound
+    def addFriend(friendId: Long) = {
+        val user = Authentication.getAuthorizedUser
         val friend = User.findById(friendId).getOrNotFound
         user.friends.add(friend)
         user.save()
         MFJson(user)
     }
     
-    def setMood(userId: Long, mood: Boolean) = {
-        val user = User.findById(userId).getOrNotFound
+    def setMood(mood: Boolean) = {
+        val user = Authentication.getAuthorizedUser
         user.setState(mood)
         user.save()
         MFJson(user)

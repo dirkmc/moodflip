@@ -32,7 +32,7 @@ function Connection(settings) {
             that.enqueue(new RemoteCall(callback, url, "GET", {}, false, true));
         },
         setMood: function(callback, mood) {
-            var url = "/api/user/" + options.userId + "/mood/" + mood;
+            var url = "/api/user/auth/mood/" + mood;
             that.enqueue(new RemoteCall(callback, url, "POST", {}, true));
         },
         

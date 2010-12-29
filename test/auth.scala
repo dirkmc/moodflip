@@ -28,14 +28,14 @@ class AuthTest extends FunctionalTestCase with Matchers {
     
     @Test
     def testBasicAuthFailure = {
-        val response = POST("/api/user/" + userId + "/mood/true")
+        val response = POST("/api/user/auth/mood/true")
         response statusShouldBe(StatusCode.UNAUTHORIZED)
     }
     
     @Test
     def testBasicAuthSuccess = {
         val request = newRequest()
-        val url = "/api/user/" + userId + "/mood/true"
+        val url = "/api/user/auth/mood/true"
         request.headers.put("authorization", new Header("authorization", "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="))
         request._init();
         val response = POST(request, url)
